@@ -5,7 +5,11 @@ class Book < ApplicationRecord
 	validates :title, presence: true
 	validates :body, presence: true, length: {maximum: 200}
 
-	def user
-  return User.find_by(id: self.user_id)
-end
-end
+	has_many :book_comments, dependent: :destroy
+	has_many :favorites, dependent: :destroy
+	has_many :favtours, through: :favorites, source: :book
+
+	def favorited_by?(user)
+          favorites.where(user_id: user.id).exists?
+     end
+ end
